@@ -1,0 +1,417 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "description": "This is Meeting Scheduler App",
+    "version": "1.0.5",
+    "title": "Indus Net Technologies",
+    "contact": {
+      "email": "nitish.kumar@indusnet.co.in"
+    }
+  },
+
+  "tags": [
+    {
+      "name": "Users Data",
+      "description": "All User Details"
+    },
+    {
+      "name": "Admin Data",
+      "description": "All Admin Details"
+    },
+    {
+      "name": "Doctor Data",
+      "description": "All Admin Details"
+    },
+    {
+      "name": "Patient Data",
+      "description": "All Admin Details"
+    }
+  ],
+
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": ["Users Data"],
+        "summary": "Add New User",
+        "description": "It will return all users data",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "name",
+                  "email",
+                  "phoneNumber",
+                  "password",
+                  "address",
+                  "street1",
+                  "street2",
+                  "country",
+                  "state",
+                  "pin"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "street1": {
+                    "type": "string"
+                  },
+                  "street2": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "pin": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sucessResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/admin/list": {
+      "get": {
+        "tags": ["Users Data"],
+        "summary": "Returns all list of the user by admin",
+        "description": "It will return all users data by admin",
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sucessResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Error"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/add": {
+      "post": {
+        "tags": ["Users Data"],
+        "summary": "Add New User",
+        "description": "It will return all users data",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "name", "phoneNumber", "password"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sucessResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["Users Data"],
+        "summary": "Login New User",
+        "description": "It will login the users data",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "password"],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sucessResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/update": {
+      "put": {
+        "tags": ["Users Data"],
+        "summary": "Login New User",
+        "description": "It will login the users data",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "password"],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sucessResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "sucessResponseObject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "isAdmin": {
+            "type": "string"
+          },
+          "pic": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponseObject": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
