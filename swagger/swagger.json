@@ -8,32 +8,40 @@
       "email": "nitish.kumar@indusnet.co.in"
     }
   },
-
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
   "tags": [
     {
-      "name": "Users Data",
-      "description": "All User Details"
+      "name": "Users",
+      "description": "All User Access"
     },
     {
-      "name": "Admin Data",
-      "description": "All Admin Details"
+      "name": "Patient",
+      "description": " User Can Access"
     },
     {
-      "name": "Doctor Data",
-      "description": "All Admin Details"
+      "name": "Appointment",
+      "description": " User Can Access"
     },
     {
-      "name": "Patient Data",
-      "description": "All Admin Details"
+      "name": "Admin",
+      "description": "Only Admin Access"
+    },
+    {
+      "name": "Doctor",
+      "description": " Admin Can Access"
     }
   ],
 
   "paths": {
-    "/register": {
+    "/user/signup": {
       "post": {
-        "tags": ["Users Data"],
-        "summary": "Add New User",
-        "description": "It will return all users data",
+        "tags": ["Users"],
+        "summary": "User Signup",
+        "description": "It will add new users data",
         "requestBody": {
           "description": "An object defining our schema for this request",
           "content": {
@@ -44,12 +52,7 @@
                   "email",
                   "phoneNumber",
                   "password",
-                  "address",
-                  "street1",
-                  "street2",
-                  "country",
-                  "state",
-                  "pin"
+                  "address"
                 ],
                 "type": "object",
                 "properties": {
@@ -66,22 +69,24 @@
                     "type": "string"
                   },
                   "address": {
-                    "type": "string"
-                  },
-                  "street1": {
-                    "type": "string"
-                  },
-                  "street2": {
-                    "type": "string"
-                  },
-                  "country": {
-                    "type": "string"
-                  },
-                  "state": {
-                    "type": "string"
-                  },
-                  "pin": {
-                    "type": "string"
+                    "type": "object",
+                    "properties": {
+                      "street1": {
+                        "type": "string"
+                      },
+                      "street2": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "pin": {
+                        "type": "integer"
+                      }
+                    }
                   }
                 }
               }
@@ -95,27 +100,27 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/sucessResponseObject"
+                  "$ref": "#/components/schemas/createdResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "User Error",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/badRequestResponse"
                 }
               }
             }
           },
-          "404": {
-            "description": "User not found",
+          "403": {
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/forbiddenResponse"
                 }
               }
             }
@@ -125,7 +130,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/serverErrorResponse"
                 }
               }
             }
@@ -133,93 +138,158 @@
         }
       }
     },
-
-    "/users/admin/list": {
-      "get": {
-        "tags": ["Users Data"],
-        "summary": "Returns all list of the user by admin",
-        "description": "It will return all users data by admin",
-        "responses": {
-          "201": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/sucessResponseObject"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "User Error"
-          },
-          "404": {
-            "description": "User not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users/add": {
+    "/user/login": {
       "post": {
-        "tags": ["Users Data"],
-        "summary": "Add New User",
-        "description": "It will return all users data",
+        "tags": ["Users"],
+        "summary": "User Login",
+        "description": "It will Login users data",
         "requestBody": {
           "description": "An object defining our schema for this request",
           "content": {
             "application/json": {
               "schema": {
-                "required": ["email", "name", "phoneNumber", "password"],
+                "required": ["email", "password"],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update": {
+      "put": {
+        "tags": ["Users"],
+        "summary": "User Update",
+        "description": "It will update users data",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "name",
+                  "email",
+                  "phoneNumber",
+                  "password",
+                  "address"
+                ],
                 "type": "object",
                 "properties": {
                   "name": {
                     "type": "string"
                   },
+                  "email": {
+                    "type": "string"
+                  },
                   "phoneNumber": {
                     "type": "string"
                   },
-                  "email": {
-                    "type": "string"
-                  },
                   "password": {
                     "type": "string"
+                  },
+                  "address": {
+                    "type": "object",
+                    "properties": {
+                      "street1": {
+                        "type": "string"
+                      },
+                      "street2": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "pin": {
+                        "type": "integer"
+                      }
+                    }
                   }
                 }
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/sucessResponseObject"
+                  "$ref": "#/components/schemas/successResponseObject"
                 }
               }
             }
           },
           "400": {
-            "description": "User Error",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/badRequestResponse"
                 }
               }
             }
           },
-          "404": {
-            "description": "User not found",
+          "403": {
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/forbiddenResponse"
                 }
               }
             }
@@ -229,7 +299,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/serverErrorResponse"
                 }
               }
             }
@@ -237,23 +307,87 @@
         }
       }
     },
-    "/users/login": {
+    "/user/me": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get User Details",
+        "description": "It will get users data",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/patient/create": {
       "post": {
-        "tags": ["Users Data"],
-        "summary": "Login New User",
-        "description": "It will login the users data",
+        "tags": ["Patient"],
+        "summary": "User Creating Patient Profile",
+        "description": "User will create a new patient profile.",
         "requestBody": {
           "description": "An object defining our schema for this request",
           "content": {
             "application/json": {
               "schema": {
-                "required": ["email", "password"],
+                "required": [
+                  "userRelationship",
+                  "age",
+                  "height",
+                  "weight",
+                  "userID"
+                ],
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "userRelationship": {
                     "type": "string"
                   },
-                  "password": {
+                  "age": {
+                    "type": "string"
+                  },
+                  "height": {
+                    "type": "string"
+                  },
+                  "weight": {
+                    "type": "string"
+                  },
+                  "userID": {
                     "type": "string"
                   }
                 }
@@ -263,32 +397,32 @@
           "required": true
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/sucessResponseObject"
+                  "$ref": "#/components/schemas/successResponseObject"
                 }
               }
             }
           },
           "400": {
-            "description": "User Error",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/badRequestResponse"
                 }
               }
             }
           },
-          "404": {
-            "description": "User not found",
+          "403": {
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/forbiddenResponse"
                 }
               }
             }
@@ -298,7 +432,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/serverErrorResponse"
                 }
               }
             }
@@ -306,58 +440,83 @@
         }
       }
     },
-    "/users/update": {
+    "/user/patient/update/{id}": {
       "put": {
-        "tags": ["Users Data"],
-        "summary": "Login New User",
-        "description": "It will login the users data",
+        "tags": ["Patient"],
+        "summary": "User Update Patient Profile",
+        "description": "User will update a patient profile.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Patient Profile Id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
         "requestBody": {
           "description": "An object defining our schema for this request",
           "content": {
             "application/json": {
               "schema": {
-                "required": ["email", "password"],
+                "required": [
+                  "userRelationship",
+                  "age",
+                  "height",
+                  "weight",
+                  "userID"
+                ],
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "userRelationship": {
                     "type": "string"
                   },
-                  "password": {
+                  "age": {
+                    "type": "string"
+                  },
+                  "height": {
+                    "type": "string"
+                  },
+                  "weight": {
+                    "type": "string"
+                  },
+                  "userID": {
                     "type": "string"
                   }
                 }
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/sucessResponseObject"
+                  "$ref": "#/components/schemas/successResponseObject"
                 }
               }
             }
           },
           "400": {
-            "description": "User Error",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/badRequestResponse"
                 }
               }
             }
           },
-          "404": {
-            "description": "User not found",
+          "403": {
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/forbiddenResponse"
                 }
               }
             }
@@ -367,7 +526,940 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponseObject"
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/patient": {
+      "get": {
+        "tags": ["Patient"],
+        "summary": "User Get Single Patient Profile",
+        "description": "User will get a patient profile.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/patient/list": {
+      "get": {
+        "tags": ["Patient"],
+        "summary": "User get Patient list",
+        "description": "User will get a patient list.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/patient/delete/{id}": {
+      "delete": {
+        "tags": ["Patient"],
+        "summary": "User delete Patient data",
+        "description": "User will delete a patient data.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Patient will delete by Id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/patient/appointment/create": {
+      "post": {
+        "tags": ["Appointment"],
+        "summary": "User Creating Patient Appointment",
+        "description": "User will create a new patient Appointment.",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "user",
+                  "doctor",
+                  "status",
+                  "phoneNumber",
+                  "description",
+                  "appointmentTime"
+                ],
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "string"
+                  },
+                  "doctor": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "appointmentTime": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/patient/appointment/delete/{id}": {
+      "delete": {
+        "tags": ["Appointment"],
+        "summary": "User delete Patient Appointment data",
+        "description": "User will delete a patient Appointment data.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "user will delete patient Appointment by Id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/patient/appointment/{id}": {
+      "get": {
+        "tags": ["Appointment"],
+        "summary": "User get Patient Appointment data",
+        "description": "User will get a patient Appointment data.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "user will get patient Appointment by Id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/patient/appointments/": {
+      "get": {
+        "tags": ["Appointment"],
+        "summary": "User get Patient Appointment data",
+        "description": "User will get a patient Appointment data.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/user/list": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get All User Details by Admin",
+        "description": "Admin will get all users data",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/user/update/{id}": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Admin can also update User Details",
+        "description": "Admin will update users data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Admin can update by user Id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "name",
+                  "email",
+                  "phoneNumber",
+                  "password",
+                  "address"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "object",
+                    "properties": {
+                      "street1": {
+                        "type": "string"
+                      },
+                      "street2": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "pin": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/doctor/create": {
+      "post": {
+        "tags": ["Doctor"],
+        "summary": "Admin can create doctor",
+        "description": "Admin will Create a new doctor",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "name",
+                  "email",
+                  "phoneNumber",
+                  "password",
+                  "address",
+                  "degree",
+                  "specialization",
+                  "fees"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "object",
+                    "properties": {
+                      "street1": {
+                        "type": "string"
+                      },
+                      "street2": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "pin": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "degree": {
+                    "type": "array"
+                  },
+                  "specialization": {
+                    "type": "string"
+                  },
+                  "fees": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/createdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/doctor/update/{id}": {
+      "put": {
+        "tags": ["Doctor"],
+        "summary": "Admin can update doctor",
+        "description": "Admin will update a new doctor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Admin can upate doctor data",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "name",
+                  "email",
+                  "phoneNumber",
+                  "password",
+                  "address",
+                  "degree",
+                  "specialization",
+                  "fees"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "object",
+                    "properties": {
+                      "street1": {
+                        "type": "string"
+                      },
+                      "street2": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "pin": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "degree": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "specialization": {
+                    "type": "string"
+                  },
+                  "fees": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/doctor/{id}": {
+      "get": {
+        "tags": ["Doctor"],
+        "summary": "Admin can get doctor details",
+        "description": "Admin will get a doctor details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Admin can get doctor data",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/doctor/delete/{id}": {
+      "delete": {
+        "tags": ["Doctor"],
+        "summary": "Admin can get doctor details",
+        "description": "Admin will get a doctor details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Admin can get doctor data",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
                 }
               }
             }
@@ -378,38 +1470,189 @@
   },
   "components": {
     "schemas": {
-      "sucessResponseObject": {
+      "serverErrorResponse": {
+        "title": "Server Error Response",
         "type": "object",
         "properties": {
-          "name": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
             "type": "string"
           },
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "phoneNumber": {
-            "type": "string"
-          },
-          "isAdmin": {
-            "type": "string"
-          },
-          "pic": {
+          "err": {
             "type": "string"
           }
+        },
+        "example": {
+          "status": 500,
+          "message": "Something Went Wrong",
+          "err": "Error"
         }
       },
-      "ErrorResponseObject": {
+      "badRequestResponse": {
+        "title": "Bad Request Response",
         "type": "object",
         "properties": {
-          "error": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
             "type": "string"
           },
-          "type": {
+          "validationErrors": {
             "type": "string"
           }
+        },
+        "example": {
+          "status": 400,
+          "message": "Something Went Wrong",
+          "validationErrors": "Error"
+        }
+      },
+      "forbiddenResponse": {
+        "title": "Forbidden Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "status": 403,
+          "message": "Forbidden"
+        }
+      },
+      "noDataResponseObject": {
+        "title": "No Data Object Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "example": {
+          "status": 204,
+          "message": "No Data Found",
+          "data": {}
+        }
+      },
+      "createdResponse": {
+        "title": "Created Response",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "example": {
+          "success": true,
+          "status": 201,
+          "message": "Created",
+          "data": {}
+        }
+      },
+      "successResponseObject": {
+        "title": "Success Response",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "tokens": {
+                "type": "object",
+                "properties": {
+                  "Access token": {
+                    "type": "string"
+                  },
+                  "Access Token Expiry": {
+                    "type": "string"
+                  },
+                  "Refresh Token": {
+                    "type": "string"
+                  },
+                  "Refresh Token Expiry": {
+                    "type": "string"
+                  }
+                }
+              },
+              "user": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "object",
+                    "properties": {
+                      "street1": {
+                        "type": "string"
+                      },
+                      "street2": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "pin": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "success": true,
+          "status": 200,
+          "message": "Successful",
+          "data": {}
         }
       }
     }
