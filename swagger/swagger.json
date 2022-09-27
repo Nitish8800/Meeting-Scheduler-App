@@ -44,6 +44,7 @@
         "description": "It will add new users data",
         "requestBody": {
           "description": "An object defining our schema for this request",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -91,8 +92,7 @@
                 }
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "201": {
@@ -100,7 +100,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/createdResponse"
+                  "$ref": "#/components/schemas/createSuccessResponseObject"
                 }
               }
             }
@@ -169,7 +169,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/successResponseObject"
+                  "$ref": "#/components/schemas/loginResponseObject"
                 }
               }
             }
@@ -1183,7 +1183,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/createdResponse"
+                  "$ref": "#/components/schemas/successResponseObject"
                 }
               }
             }
@@ -1466,6 +1466,66 @@
           }
         }
       }
+    },
+    "/doctor/appointments/": {
+      "get": {
+        "tags": ["Appointment"],
+        "summary": "doctor will get all details of Appointment",
+        "description": "Admin will get a doctor details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Admin can get doctor data",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1547,8 +1607,8 @@
           "data": {}
         }
       },
-      "createdResponse": {
-        "title": "Created Response",
+      "createSuccessResponseObject": {
+        "title": "Create Success Response",
         "type": "object",
         "properties": {
           "success": {
@@ -1562,18 +1622,51 @@
           },
           "data": {
             "type": "object",
-            "properties": {}
+            "properties": {
+              "user": {
+                "$ref": "#/components/schemas/user"
+              }
+            }
           }
         },
         "example": {
           "success": true,
           "status": 201,
-          "message": "Created",
+          "message": "Created Successfully",
           "data": {}
         }
       },
       "successResponseObject": {
         "title": "Success Response",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "$ref": "#/components/schemas/user"
+              }
+            }
+          }
+        },
+        "example": {
+          "success": true,
+          "status": 200,
+          "message": "Successful",
+          "data": {}
+        }
+      },
+      "loginResponseObject": {
+        "title": "Login Success Response",
         "type": "object",
         "properties": {
           "success": {
@@ -1606,44 +1699,7 @@
                 }
               },
               "user": {
-                "type": "object",
-                "properties": {
-                  "_id": {
-                    "type": "integer"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "phoneNumber": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  },
-                  "address": {
-                    "type": "object",
-                    "properties": {
-                      "street1": {
-                        "type": "string"
-                      },
-                      "street2": {
-                        "type": "string"
-                      },
-                      "country": {
-                        "type": "string"
-                      },
-                      "state": {
-                        "type": "string"
-                      },
-                      "pin": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
+                "$ref": "#/components/schemas/user"
               }
             }
           }
@@ -1651,8 +1707,97 @@
         "example": {
           "success": true,
           "status": 200,
-          "message": "Successful",
+          "message": "Login Successfully",
           "data": {}
+        }
+      },
+      "patientSuccessResponseObject": {
+        "title": "Patient Create Success Response",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "patient": {
+                "$ref": "#/components/schemas/patient"
+              }
+            }
+          }
+        },
+        "example": {
+          "success": true,
+          "status": 200,
+          "message": "Login Successfully",
+          "data": {}
+        }
+      },
+      "user": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "street1": {
+                "type": "string"
+              },
+              "street2": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "pin": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "patient": {
+        "type": "object",
+        "properties": {
+          "userRelationship": {
+            "type": "string"
+          },
+          "age": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "string"
+          },
+          "userID": {
+            "type": "string"
+          }
         }
       }
     }
